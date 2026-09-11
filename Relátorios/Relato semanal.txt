@@ -1,0 +1,9 @@
+Relato semanal
+
+Durante esta semana, foi realizada a instalação e configuração do VMware, bem como a criação de duas máquinas virtuais com as mesmas especificações para a realização dos testes.
+
+As máquinas virtuais foram configuradas com 12 núcleos de CPU, 10 GB de memória RAM, 30 GB de armazenamento e 8 GB de memória de vídeo. Após a configuração, foram instalados os sistemas operacionais Ubuntu e OpenSUSE, um em cada máquina virtual.
+
+A máquina utilizada como host possui um Ryzen 5 4600G (6 núcleos/12 threads), 16 GB de RAM (2×8 GB, 3200 MHz), uma RTX 5060 Ti de 16 GB e armazenamento em SSD NVMe.
+
+Durante o processo, o único problema encontrado foi uma demora acima do normal durante a instalação do Ubuntu. Apesar disso, a instalação foi concluída com sucesso e as duas máquinas virtuais ficaram configuradas para os próximos testes.
