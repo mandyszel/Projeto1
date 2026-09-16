@@ -1,0 +1,15 @@
+Relato Semanal
+
+Durante esta semana, foram realizados os testes de desempenho nas máquinas virtuais com Ubuntu e OpenSUSE, utilizando as mesmas configurações definidas anteriormente. O objetivo foi comparar o consumo de recursos e o desempenho básico dos dois sistemas operacionais em condições semelhantes.
+
+Para medir o desempenho do processador, foi utilizado o Sysbench, por meio do comando sysbench cpu --cpu-max-prime=20000 run. O benchmark apresentou resultados muito próximos entre os sistemas, com o Ubuntu registrando um tempo de aproximadamente 10,0014 segundos, enquanto o OpenSUSE apresentou aproximadamente 10,0013 segundos.
+
+O consumo de memória RAM foi verificado utilizando o comando free -m. O Ubuntu apresentou aproximadamente 1772 MB de memória utilizada, enquanto o OpenSUSE apresentou aproximadamente 1773 MB.
+
+Para verificar o uso do processador em situação de inatividade, cada máquina virtual foi mantida sem atividades por aproximadamente cinco minutos. Em seguida, os valores foram consultados por meio do comando top, considerando os valores de uso de CPU referentes a us (processos de usuário) e sy (processos do sistema). Os resultados indicaram um uso muito baixo do processador, de aproximadamente 0,1%, em ambos os sistemas.
+
+Também foi realizado um teste de instalação de pacote, utilizando o htop como pacote de referência. No Ubuntu, foi utilizado o comando sudo apt install htop -y, enquanto no OpenSUSE foi utilizado sudo zypper --non-interactive install htop. O Ubuntu apresentou um tempo de instalação de aproximadamente 4,833 segundos, enquanto o OpenSUSE apresentou aproximadamente 4,086 segundos.
+
+Por fim, o espaço utilizado no armazenamento foi verificado com o comando df -h /. O Ubuntu apresentou aproximadamente 11 GB de espaço utilizado, enquanto o OpenSUSE apresentou aproximadamente 7,4 GB.
+
+De modo geral, os testes demonstraram resultados bastante semelhantes no desempenho de CPU e no consumo de memória entre as duas distribuições. As principais diferenças observadas foram no tempo de instalação do pacote e no espaço de armazenamento utilizado, com o OpenSUSE apresentando valores menores nesses dois testes.
