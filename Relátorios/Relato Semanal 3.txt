@@ -1,0 +1,66 @@
+Relato Semanal
+
+Durante esta semana, os testes de desempenho nas máquinas virtuais foram expandidos com a inclusão de uma nova configuração, o OpenSUSE com interface KDE, além de ter sido realizada uma reformulação na metodologia utilizada para o teste de instalação de pacotes. O objetivo foi aprofundar a comparação entre as distribuições e isolar o impacto da interface gráfica no uso de recursos e no desempenho geral do sistema.
+
+A adição da máquina virtual com OpenSUSE KDE permitiu criar uma matriz comparativa mais completa. Com essa inclusão, tornou-se possível avaliar tanto a diferença estrutural entre distribuições que utilizam a mesma interface gráfica, no caso do Ubuntu e do OpenSUSE com GNOME, quanto o impacto direto da troca de interface sobre uma mesma base de sistema operacional, comparando o OpenSUSE em sua versão GNOME e na versão KDE.
+
+Para aumentar a precisão na medição do tempo de instalação de pacotes, a execução manual foi substituída por um script automatizado em Python, utilizando as bibliotecas time e subprocess. Para evitar que a solicitação de senha do comando sudo interferisse no tempo registrado, a autenticação foi realizada previamente com o comando sudo -v. Além disso, o procedimento passou a contar com três execuções consecutivas de remoção e instalação do pacote htop, o que permitiu desconsiderar o tempo atípico da primeira rodada decorrente do carregamento inicial de metadados e obter a média real do sistema em regime permanente.
+
+Com a aplicação da nova metodologia e considerando as médias estabilizadas após o aquecimento do cache, o tempo de instalação do htop no Ubuntu passou para aproximadamente 4,01 segundos, enquanto o OpenSUSE KDE registrou cerca de 3,48 segundos e o OpenSUSE com GNOME obteve aproximadamente 3,09 segundos. Dessa forma, o OpenSUSE com GNOME apresentou o menor tempo de processamento para a instalação do pacote entre as três configurações avaliadas.
+
+O desempenho superior do OpenSUSE com GNOME nesse teste pode ser explicado por dois fatores principais. Em comparação ao Ubuntu, o gerenciador APT executa uma cadeia mais longa de gatilhos pós-instalação e atualização de índices, o que gera maior sobrecarga no disco. Já em relação ao OpenSUSE KDE, a instalação de novos utilitários no ambiente KDE aciona rotinas de reconstrução do cache de serviços e ícones da interface Plasma, enquanto no ambiente GNOME a instalação de um aplicativo de linha de comando exige menos atualizações de estado do sistema visual.
+
+De modo geral, as alterações realizadas durante a semana permitiram uma elevação na consistência dos dados coletados. A introdução do OpenSUSE KDE associada à automação do teste de pacotes forneceu resultados mais defensáveis, tornando clara a distinção entre as características herdadas do sistema operacional base e o comportamento decorrente do ambiente gráfico escolhido.
+
+Script para Ubuntu (APT)
+```bash
+python3 -c "
+import time, subprocess
+
+print('Autenticando sudo...')
+subprocess.run(['sudo', '-v'])
+
+print('Limpando instalação prévia...')
+subprocess.run(['sudo', 'apt', 'remove', '--purge', '-y', 'htop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+times = []
+for i in range(1, 4):
+    subprocess.run(['sudo', 'apt', 'remove', '--purge', '-y', 'htop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    start = time.time()
+    res = subprocess.run(['sudo', 'apt', 'install', '-y', 'htop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    end = time.time()
+    dur = end - start
+    times.append(dur)
+    print(f'Execução {i}: {dur:.3f}s')
+
+print(f'---> Média Ubuntu: {sum(times)/len(times):.3f}s')
+"
+
+Script openSUSE GNOME/KDE
+
+python3 -c "
+import time, subprocess
+
+print('Autenticando sudo...')
+subprocess.run(['sudo', '-v'])
+
+print('Limpando instalação prévia...')
+subprocess.run(['sudo', 'zypper', '--non-interactive', 'remove', 'htop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+times = []
+for i in range(1, 4):
+    subprocess.run(['sudo', 'zypper', '--non-interactive', 'remove', 'htop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    start = time.time()
+    res = subprocess.run(['sudo', 'zypper', '--non-interactive', 'install', 'htop'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    end = time.time()
+    dur = end - start
+    
+    if res.returncode != 0:
+        print(f'Execução {i}: Falhou com código de erro {res.returncode}')
+    else:
+        times.append(dur)
+        print(f'Execução {i}: {dur:.3f}s')
+
+if times:
+    print(f'---> Média openSUSE: {sum(times)/len(times):.3f}s')
+"
